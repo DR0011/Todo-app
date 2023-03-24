@@ -1,11 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addNewTodo, updateTodo } from "../redux/actions";
+
 
 export const AddTodo = () => {
     const [value, setValue] = useState({});
     const [error, setError] = useState("");
+    const dispatch = useDispatch();
+    const isEdit = useSelector((state) => state.todoReducer.isEdit);
+    const editTodo = useSelector((state) => state.todoReducer.editTodo);
+
+
+    useEffect(() => {
+        editTodo && setValue(() => editTodo);
+    }, [editTodo]);
 
     const onSubmit = (e) => {
-        debugger
         e.preventDefault();
 
         if (!value?.title) {
@@ -20,6 +30,22 @@ export const AddTodo = () => {
                 description: 'Please enter todo description'
             }));
         }
+        if (isEdit) {
+            dispatch(updateTodo(editTodo.id, value));
+        }
+        else if (value?.title && value?.description) {
+            dispatch(addNewTodo(value));
+        }
+        document.getElementById("todoForm").reset();
+
+    };
+    const changeEvent = (e) => {
+        setValue(
+            {
+                ...value,
+                [e.target.name]: e.target.value,
+            },
+        );
 
     };
 
@@ -35,8 +61,7 @@ export const AddTodo = () => {
                             className="form-control mb-2 mr-sm-3"
                             placeholder="Todo Title"
                             defaultValue={value?.title}
-
-
+                            onChange={(e) => changeEvent(e)}
                         />
                         <span className="text-danger">{error?.title}</span>
                     </div>
@@ -49,13 +74,14 @@ export const AddTodo = () => {
                             className="form-control mb-2 mr-sm-3"
                             placeholder="Description"
                             defaultValue={value?.description}
+                            onChange={(e) => changeEvent(e)}
 
                         />
                         <span className="text-danger">{error?.description}</span>
                     </div>
 
                     <div className="col-xl-2">
-                        <button className="btn btn-primary mb-2 mt-4" type="submit">Create</button>
+                        <button className="btn btn-primary mb-2 mt-4" type="submit">{isEdit ? 'Update Todo' : 'Create Todo'}</button>
                     </div>
                 </div>
             </form>
