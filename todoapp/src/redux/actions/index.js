@@ -1,10 +1,9 @@
 import {
     ADD_TODO,
     DELETE_TODO,
-    CLEAR_ALL_TODO,
     EDIT_TODO,
     UPDATE_TODO,
-    MARK_COMPLETED,
+
 } from "./actionTypes";
 
 export const addNewTodo = (todo) => {
@@ -23,13 +22,6 @@ export const deleteTodo = (id) => {
         id,
     };
 };
-
-export const clearAlltodo = () => {
-    return {
-        type: CLEAR_ALL_TODO,
-    };
-};
-
 export const editTodo = (id) => {
     return {
         type: EDIT_TODO,
@@ -51,11 +43,3 @@ export const updateTodo = (id, todo) => {
     };
 };
 
-export const markTodoCompleted = (id) => {
-    return {
-        type: MARK_COMPLETED,
-        payload: {
-            selectedTodoId: id
-        }
-    }
-}
